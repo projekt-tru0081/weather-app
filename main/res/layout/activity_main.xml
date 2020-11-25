@@ -73,6 +73,18 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/location_text"
+        android:layout_width="176dp"
+        android:layout_height="44dp"
+        android:text="Location" />
+
+    <Button
+        android:id="@+id/location_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="get location" />
+
 </LinearLayout>
 
 
