@@ -1,9 +1,11 @@
 package com.example.weatherappproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -12,6 +14,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnSearch;
     EditText etCityName;
-    TextView tvCity, tvWeather;
+    TextView tvCity, tvWeather, tvPressure, tvHumidity;
     ImageView ivWeather;
 
     private Button btn;
@@ -56,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
     private long UPDATE_INTERVAL = 15 * 1000;  /* 15 secs */
     private long FASTEST_INTERVAL = 5000; /* 5 sec */
+
+    public static String cityString;
 
 
     @Override
@@ -68,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         tvCity = findViewById(R.id.tvCity);
         tvWeather = findViewById(R.id.tvWeather);
         ivWeather = findViewById(R.id.ivWeather);
+        tvPressure = findViewById(R.id.pressure);
+        tvHumidity = findViewById(R.id.humidity);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +91,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         startLocationUpdates();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.example_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item2:
+                loadWeatherByCityName(cityString);
+                Toast.makeText(this,"Item 1 selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item3:
+                Intent i = new Intent(this, SqlActivity.class);
+                this.startActivity(i);
+                Toast.makeText(this,"Item 2 selected", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     // Trigger new location updates at interval
@@ -141,7 +175,9 @@ public class MainActivity extends AppCompatActivity {
         Geocoder gcd = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
         if (addresses.size() > 0) {
-            System.out.println(addresses.get(0).getLocality());
+            //System.out.println(addresses.get(0).getLocality());
+            cityString = addresses.get(0).getLocality();
+            System.out.println(cityString);
         }
         else {
             // do your stuff
@@ -176,12 +212,16 @@ public class MainActivity extends AppCompatActivity {
                             else {
                                 JsonObject main = result.get("main").getAsJsonObject();
                                 double temp = main.get("temp").getAsDouble();
+                                double humidity = main.get("humidity").getAsDouble();
+                                double pressure = main.get("pressure").getAsDouble();
                                 // get city
 
                                 JsonObject sys = result.get("sys").getAsJsonObject();
                                 String country = sys.get("country").getAsString();
                                 tvWeather.setText(temp + "°C");
                                 tvCity.setText(city + ", " + country);
+                                tvHumidity.setText(humidity + " %");
+                                tvPressure.setText(pressure + " hPa");
 
                                 JsonObject weather = result.get("weather").getAsJsonArray().get(0).getAsJsonObject();
                                 String icon = weather.get("icon").getAsString();
