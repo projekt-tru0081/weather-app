@@ -20,6 +20,9 @@ public class CityModel {
                 ", city='" + city + '\'' +
                 '}';
     }
+    public String toStringCity(){
+        return  city;
+    }
 
     public int getId() {
         return id;

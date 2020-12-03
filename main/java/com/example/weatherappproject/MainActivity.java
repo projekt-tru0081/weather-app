@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Current weather");
 
         btnSearch = findViewById(R.id.btnSearch);
         etCityName = findViewById(R.id.etCityName);
@@ -105,12 +106,12 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.item2:
                 loadWeatherByCityName(cityString);
-                Toast.makeText(this,"Item 1 selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,"Item 1 selected", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.item3:
                 Intent i = new Intent(this, SqlActivity.class);
                 this.startActivity(i);
-                Toast.makeText(this,"Item 2 selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,"Item 2 selected", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

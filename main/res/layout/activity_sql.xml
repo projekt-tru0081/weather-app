@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:windowSoftInputMode="adjustNothing"
+    android:focusableInTouchMode="false"
+    android:isScrollContainer="false"
     tools:context=".SqlActivity">
 
     <Button
@@ -17,22 +20,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addCity" />
 
-    <Button
-        android:id="@+id/btn_Edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="36dp"
-        android:text="edit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/btn_Add"
-        app:layout_constraintTop_toBottomOf="@+id/addCity" />
-
     <ListView
         android:id="@+id/lv_customer"
         android:layout_width="409dp"
         android:layout_height="450dp"
+        android:windowSoftInputMode="adjustNothing"
+        android:focusableInTouchMode="false"
+        android:isScrollContainer="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -56,4 +50,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.039" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="98dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="36dp"
+        android:text="Delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.462"
+        app:layout_constraintStart_toEndOf="@+id/btn_Add"
+        app:layout_constraintTop_toBottomOf="@+id/addCity" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
