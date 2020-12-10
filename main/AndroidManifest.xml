@@ -16,9 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".SqlActivity">
-        </activity>
+        <activity android:name=".activity_forecast"></activity>
+        <activity android:name=".SqlActivity"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"

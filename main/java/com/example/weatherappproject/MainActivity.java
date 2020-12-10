@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -13,11 +14,14 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static String cityString;
 
+    float x1,x2,y1,y2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +94,17 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please enter a city name", Toast.LENGTH_SHORT).show();
                 else {
                     loadWeatherByCityName(city);
+                    etCityName.getText().clear();
+                    hideSoftKeyboard(MainActivity.this);
                 }
             }
         });
         startLocationUpdates();
+
+        Intent i = getIntent();
+        String dataTransmited = i.getStringExtra("CLICKED_CITY");
+        Log.d(dataTransmited,"clickCitymain");
+        loadWeatherByCityName(dataTransmited);
     }
 
     @Override
@@ -117,6 +130,14 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     // Trigger new location updates at interval
@@ -186,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void loadWeatherByCityName(final String city) {
+    public void loadWeatherByCityName(final String city) {
         Ion.getDefault(MainActivity.this).getConscryptMiddleware().enable(false);
 
 
@@ -239,6 +260,25 @@ public class MainActivity extends AppCompatActivity {
         Ion.with(this)
                 .load("http://openweathermap.org/img/w/" + icon + ".png")
                 .intoImageView(ivWeather);
+    }
+
+    public boolean onTouchEvent(MotionEvent touchEvent){
+        switch (touchEvent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                x1=touchEvent.getX();
+                y1=touchEvent.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2=touchEvent.getX();
+                y2=touchEvent.getY();
+                if (x1>x2){
+                    Intent i = new Intent(MainActivity.this,activity_forecast.class);
+                    startActivity(i);
+                }
+
+                break;
+        }
+        return false;
     }
 
 }

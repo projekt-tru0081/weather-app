@@ -2,6 +2,7 @@ package com.example.weatherappproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -30,7 +33,7 @@ public class SqlActivity extends AppCompatActivity {
     Button btn_Add;
     EditText addCity;
     ListView lv_customer;
-
+    boolean whatIsChecked;
     ArrayAdapter cityArrayAdapter;
     DataBaseHelper dataBaseHelper;
 
@@ -44,8 +47,8 @@ public class SqlActivity extends AppCompatActivity {
         addCity=findViewById(R.id.addCity);
         lv_customer=findViewById(R.id.lv_customer);
         final Switch switchVisibility = findViewById(R.id.switch1);
-
         dataBaseHelper = new DataBaseHelper(SqlActivity.this);
+        final MainActivity mainActivity = new MainActivity();
 
         ShowCityOnListView(dataBaseHelper);
 
@@ -64,40 +67,47 @@ public class SqlActivity extends AppCompatActivity {
                     boolean success = dataBaseHelper.addOne(cityModel);
                     Toast.makeText(SqlActivity.this, "Success "+ success, LENGTH_SHORT).show();
                     ShowCityOnListView(dataBaseHelper);
+                    addCity.getText().clear();
+                    mainActivity.hideSoftKeyboard(SqlActivity.this);
                 }
 
             }
         });
 
-        SharedPreferences sharedPreferences = getSharedPreferences("save", MODE_PRIVATE);
-        switchVisibility.setChecked(sharedPreferences.getBoolean("value",true));
-        switchVisibility.setOnClickListener(new View.OnClickListener() {
+        switchVisibility.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (switchVisibility.isChecked()){
-                    SharedPreferences.Editor editor = getSharedPreferences("save",MODE_PRIVATE).edit();
-                    editor.putBoolean("value",true);
-                    editor.apply();
-                    switchVisibility.setChecked(true);
-                    lv_customer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            CityModel clickedCity = (CityModel) parent.getItemAtPosition(position);
-                            //Log.d(clickedCity.getCity(),"clickedcity");
-                            dataBaseHelper.deleteOne(clickedCity);
-                            ShowCityOnListView(dataBaseHelper);
-                            Toast.makeText(SqlActivity.this, "Deleted", LENGTH_SHORT).show();
-                        }
-                    });
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                whatIsChecked = isChecked;
+            }
+        });
+
+        lv_customer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (whatIsChecked == true) {
+                    CityModel clickedCity = (CityModel) parent.getItemAtPosition(position);
+                    //Log.d(clickedCity.getCity(),"clickedcity");
+                    dataBaseHelper.deleteOne(clickedCity);
+                    ShowCityOnListView(dataBaseHelper);
+                    Toast.makeText(SqlActivity.this, "Deleted", LENGTH_SHORT).show();
                 }
-                else{
-                    SharedPreferences.Editor editor = getSharedPreferences("save",MODE_PRIVATE).edit();
-                    editor.putBoolean("value",false);
-                    switchVisibility.setChecked(false);
+                else {
+                    CityModel clickedCity = (CityModel) parent.getItemAtPosition(position);
+                    //MainActivity mainActivity = new MainActivity();
+                    String clickCity = clickedCity.getCity();
+                    Log.d(clickCity,"clickedCitysql");
+                    Intent i = new Intent(SqlActivity.this, MainActivity.class);
+                    i.putExtra("CLICKED_CITY",clickCity);
+                    startActivity(i);
                 }
             }
         });
-    }
+
+
+
+        }
+
+
 
     private void ShowCityOnListView(DataBaseHelper dataBaseHelper2) {
         cityArrayAdapter = new ArrayAdapter<CityModel>(SqlActivity.this, android.R.layout.simple_list_item_1, dataBaseHelper2.getEveryone());
