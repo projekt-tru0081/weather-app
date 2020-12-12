@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
         //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        Log.d("msg", msg);
+        //Log.d("msg", msg);
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         if (addresses.size() > 0) {
             //System.out.println(addresses.get(0).getLocality());
             cityString = addresses.get(0).getLocality();
-            System.out.println(cityString);
+           // System.out.println(cityString);
         }
         else {
             // do your stuff
@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 y2=touchEvent.getY();
                 if (x1>x2){
                     Intent i = new Intent(MainActivity.this,activity_forecast.class);
+                    i.putExtra("CITY_MAIN", tvCity.getText().toString());
                     startActivity(i);
                 }
 
